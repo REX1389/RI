@@ -5,10 +5,12 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Gogogo.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="50" d:DesignWidth="50"
       Title="Game">
 
     <Grid>
-        
+        <Button Padding="0" Margin="0" BorderThickness="0">
+            <Image Source="../Pictures/Prazno.png"/>
+        </Button>
     </Grid>
 </Page>
