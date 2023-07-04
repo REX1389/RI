@@ -44,6 +44,259 @@ public class GameState
         return true;
     }
 
+    public int CountThroughBoard(int x, int y)
+    {
+        int result = 1; //1 jer je pocetno polje vec poseceno
+
+        int s = board[x][y], i, j;
+
+        List<int> VisitedX = new List<int>();
+        List<int> VisitedY = new List<int>();
+
+        VisitedX.Add(x);
+        VisitedY.Add(y);
+
+        for (int k = 0; k < VisitedX.Count; k++)
+        {
+            i = VisitedX[k];
+            j = VisitedY[k];
+
+            if (i > 0)
+            {
+                if (board[i - 1][j] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i - 1);
+                        VisitedY.Add(j);
+                        result++;
+                    }
+                }
+            }
+            if (i < n - 1)
+            {
+                if (board[i + 1][j] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i + 1);
+                        VisitedY.Add(j);
+                        result++;
+                    }
+                }
+            }
+            if (j > 0)
+            {
+                if (board[i][j - 1] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i);
+                        VisitedY.Add(j - 1);
+                        result++;
+                    }
+                }
+            }
+            if (j < n - 1)
+            {
+                if (board[i][j + 1] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i);
+                        VisitedY.Add(j + 1);
+                        result++;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public void ReplaceThroughBoard(int x, int y, int v)
+    {
+        int s = board[x][y], i, j;
+
+        List<int> VisitedX = new List<int>();
+        List<int> VisitedY = new List<int>();
+
+        VisitedX.Add(x);
+        VisitedY.Add(y);
+
+        for (int k = 0; k < VisitedX.Count; k++)
+        {
+            i = VisitedX[k];
+            j = VisitedY[k];
+
+            board[i][j] = v;
+
+            if (i > 0)
+            {
+                if (board[i - 1][j] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i - 1);
+                        VisitedY.Add(j);
+                    }
+                }
+            }
+            if (i < n - 1)
+            {
+                if (board[i + 1][j] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i + 1);
+                        VisitedY.Add(j);
+                    }
+                }
+            }
+            if (j > 0)
+            {
+                if (board[i][j - 1] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i);
+                        VisitedY.Add(j - 1);
+                    }
+                }
+            }
+            if (j < n - 1)
+            {
+                if (board[i][j + 1] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i);
+                        VisitedY.Add(j + 1);
+                    }
+                }
+            }
+        }
+    }
+
+    public bool SearchThroughBoard(int x, int y, int v)
+    {
+        int s = board[x][y], i, j;
+
+        List<int> VisitedX = new List<int>();
+        List<int> VisitedY = new List<int>();
+
+        VisitedX.Add(x);
+        VisitedY.Add(y);
+
+        for(int k = 0; k < VisitedX.Count; k++)
+        {
+            i = VisitedX[k];
+            j = VisitedY[k];
+
+            if(i > 0)
+            {
+                if (board[i - 1][j] == v)
+                    return true;
+                if (board[i - 1][j] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i - 1);
+                        VisitedY.Add(j);
+                    }
+                }
+            }
+            if(i < n - 1)
+            {
+                if (board[i + 1][j] == v)
+                    return true;
+                if (board[i + 1][j] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i + 1);
+                        VisitedY.Add(j);
+                    }
+                }
+            }
+            if(j > 0)
+            {
+                if (board[i][j - 1] == v)
+                    return true;
+                if (board[i][j - 1] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i);
+                        VisitedY.Add(j - 1);
+                    }
+                }
+            }
+            if(j < n - 1)
+            {
+                if (board[i][j + 1] == v)
+                    return true;
+                if (board[i][j + 1] == s)
+                {
+                    bool put = true;
+                    for (int l = 0; l < VisitedX.Count; l++)
+                        if (i == VisitedX[l] && j == VisitedY[l])
+                            put = false;
+                    if (put)
+                    {
+                        VisitedX.Add(i);
+                        VisitedY.Add(j + 1);
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 
     public bool CanPlaceStone(int i, int j)
     {
