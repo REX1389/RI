@@ -30,6 +30,15 @@ public class GameState
             }
         }
     }
+
+    public bool Equals(List<List<int>> board2)
+    {
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                if (board[i][j] != board2[i][j])
+                    return false;
+        return true;
+    }
 }
 
 public partial class Game : Page
@@ -57,6 +66,7 @@ public partial class Game : Page
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri("/Pictures/Empty.png", UriKind.Relative));
                 Button button = new Button();
+                button.Name = "Button_" + i + "_" + j;
                 button.BorderThickness = new Thickness(0);
                 button.Padding = new Thickness(0);
                 button.Content = img;
