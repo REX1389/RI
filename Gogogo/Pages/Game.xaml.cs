@@ -9,7 +9,7 @@ namespace Gogogo.Pages;
 
 public class con
 {
-    public const int C = 2, TIME = 1;
+    public const int C = 2, TIME = 2;
 }
 
 public enum Player
