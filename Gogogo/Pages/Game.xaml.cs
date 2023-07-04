@@ -9,7 +9,7 @@ namespace Gogogo.Pages;
 
 public class con
 {
-    public const int C = 2, TIME = 3;
+    public const int C = 2, TIME = 1;
 }
 
 public enum Player
@@ -30,19 +30,22 @@ public class Node
 {
     public int visited = 0;
     public double value = 0;
+    public int player = 0;
     public GameState state;
     public Turn Turn;
     public List<Node> children = new List<Node>();
 
-    public Node(GameState gs)
+    public Node(GameState gs, int player)
     {
         state = new GameState(gs);
+        this.player = player;
     }
 
-    public Node(GameState gs, int i, int j)
+    public Node(GameState gs, int i, int j, int player)
     {
         Turn = new Turn(i, j);
         state = new GameState(gs, i, j);
+        this.player = player;
     }
 
     public double Explore()
@@ -51,9 +54,9 @@ public class Node
 
         if(visited == 0)
         {
-            v = state.Simulate();
+            v = state.Simulate(player);
             foreach (Turn t in state.FindAllMoves())
-                children.Add(new Node(state, t.x, t.y));
+                children.Add(new Node(state, t.x, t.y, player));
         }
         else
         {
@@ -494,9 +497,24 @@ public class GameState
         return list;
     }
 
-    public double Simulate()
+    public double Simulate(int player)
     {
-        return 1;
+        Random rnd = new Random();
+
+        GameState gs = new GameState(this);
+        List<Turn> turns;
+
+        while(gs.winner == -1)
+        {
+            turns = gs.FindAllMoves();
+            int t = rnd.Next(0, turns.Count);
+            gs = new GameState(gs, turns[t].x, turns[t].y);
+        }
+
+        if(player == 0)
+            return gs.point1 - gs.point2;
+        else
+            return gs.point2 - gs.point1;
     }
 
     public void PlaceStone(int x, int y)
@@ -619,19 +637,20 @@ public partial class Game : Page
 
     public void EndTurn()
     {
+        DrawBoard();
         if (state.turn == 0)
         {
             TurnTxt.Text = "Turn: Black";
-            if (player1 == Player.AI)
-                AITurn();
         }
-        if (state.turn == 1)
+        else if (state.turn == 1)
         {
             TurnTxt.Text = "Turn: White";
-            if (player2 == Player.AI)
-                AITurn();
         }
-        DrawBoard();
+
+        /*if (state.turn == 0 && player1 == Player.AI)
+            AITurn();
+        else if (state.turn == 1 && player2 == Player.AI)
+            AITurn();*/
     }
 
     private void ButtonPlaceStone(object sender, RoutedEventArgs e)
@@ -666,6 +685,14 @@ public partial class Game : Page
             EndTurn();
     }
 
+    private void StartAI(object sender, RoutedEventArgs e)
+    {
+        if (state.turn == 0 && player1 == Player.AI)
+            AITurn();
+        else if (state.turn == 1 && player2 == Player.AI)
+            AITurn();
+    }
+
     private void EndGame()
     {
         if (state.winner == 0)
@@ -694,10 +721,10 @@ public partial class Game : Page
 
     private void AITurn()
     {
-        Node root = new Node(state);
+        Node root = new Node(state, state.turn);
 
-        DateTime start = new DateTime();
-        TimeSpan time = new TimeSpan(3);
+        DateTime start = DateTime.Now;
+        TimeSpan time = new TimeSpan(0, 0, 0, con.TIME, 0);
 
         while (DateTime.Now < start + time)
         {
