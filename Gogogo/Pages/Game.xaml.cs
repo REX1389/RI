@@ -12,7 +12,8 @@ public enum Player
 
 public class GameState
 {
-    public int turn, n, pass;
+    public int turn, n, pass, winner = -1;
+    public double point1 = 0, point2 = 0;
     public List<List<int>> board, previousBoard;
 
     public GameState(int n)
@@ -298,17 +299,42 @@ public class GameState
         return false;
     }
 
-    public void PlaceStoneOnBoard(int i, int j, List<List<int>> b)
+    public void PlaceStoneOnBoard(int i, int j, List<List<int>> b, bool count)
     {
         b[i][j] = turn;
         if (i > 0 && b[i - 1][j] == 1 - turn && !SearchThroughBoard(i - 1, j, -1, b))
+        {
+            if (turn == 0 && count)
+                point1 += CountThroughBoard(i - 1, j);
+            if (turn == 1 && count)
+                point2 += CountThroughBoard(i - 1, j);
             ReplaceThroughBoard(i - 1, j, -1, b);
+        }
         if (j > 0 && b[i][j - 1] == 1 - turn && !SearchThroughBoard(i, j - 1, -1, b))
+        {
+            if (turn == 0 && count)
+                point1 += CountThroughBoard(i, j - 1);
+            if (turn == 1 && count)
+                point2 += CountThroughBoard(i, j - 1);
             ReplaceThroughBoard(i, j - 1, -1, b);
+
+        }
         if (i < n - 1 && b[i + 1][j] == 1 - turn && !SearchThroughBoard(i + 1, j, -1, b))
+        {
+            if (turn == 0 && count)
+                point1 += CountThroughBoard(i + 1, j);
+            if (turn == 1 && count)
+                point2 += CountThroughBoard(i + 1, j);
             ReplaceThroughBoard(i + 1, j, -1, b);
+        }
         if (j < n - 1 && b[i][j + 1] == 1 - turn && !SearchThroughBoard(i, j + 1, -1, b))
+        {
+            if (turn == 0 && count)
+                point1 += CountThroughBoard(i, j + 1);
+            if (turn == 1 && count)
+                point2 += CountThroughBoard(i, j + 1);
             ReplaceThroughBoard(i, j + 1, -1, b);
+        }
     }
 
     public bool CanPlaceStone(int x, int y)
@@ -326,7 +352,7 @@ public class GameState
             }
         }
 
-        PlaceStoneOnBoard(x, y, b);
+        PlaceStoneOnBoard(x, y, b, false);
         if (EqualsToPrevious(b))
             return false;
         if (!SearchThroughBoard(x, y, -1, b))
@@ -346,7 +372,7 @@ public class GameState
                 previousBoard[i - 1].Add(board[i - 1][j - 1]);
             }
         }
-        PlaceStoneOnBoard(x, y, board);
+        PlaceStoneOnBoard(x, y, board, true);
         turn = 1 - turn;
         pass = 0;
     }
@@ -355,6 +381,38 @@ public class GameState
     {
         pass++;
         turn = 1 - turn;
+
+        if(pass == 2)
+        {
+            ChooseWinner();
+            turn = -1;
+        }
+    }
+
+    public void ChooseWinner()
+    {
+        turn = -1;
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < n; j++)
+            {
+                if (board[i][j] == -1)
+                {
+                    if (SearchThroughBoard(i, j, 0, board) && !SearchThroughBoard(i, j, 1, board))
+                        point1++;
+                    else if (!SearchThroughBoard(i, j, 0, board) && SearchThroughBoard(i, j, 1, board))
+                        point2++;
+                }
+            }
+        if (n == 7 || n == 19)
+            point2 += 0.5;
+        else
+            point2 += 6.5;
+
+        if (point1 > point2)
+            winner = 0;
+        else
+            winner = 1;
+
     }
 }
 
@@ -464,19 +522,25 @@ public partial class Game : Page
 
     private void EndGame()
     {
-        if (state.turn == 0)
+        if (state.winner == 0)
             WinnerTxt.Text = "Winner: White";
-        else
+        if (state.winner == 1)
             WinnerTxt.Text = "Winner: Black";
-        state.turn = -1;
         TurnTxt.Text = "Turn:";
+
+        PointsTxt.Text = state.point1 + " - " + state.point2;
     }
 
     private void Resign(object sender, RoutedEventArgs e)
     {
+        if (state.turn == 0 && player1 == Player.AI)
+            return;
+        if (state.turn == 1 && player2 == Player.AI)
+            return;
+
         if (state.turn == 0)
             WinnerTxt.Text = "Winner: White";
-        else
+        if (state.turn == -1)
             WinnerTxt.Text = "Winner: Black";
         state.turn = -1;
         TurnTxt.Text = "Turn:";
