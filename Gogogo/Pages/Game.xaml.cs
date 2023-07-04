@@ -53,6 +53,7 @@ public class GameState
     public void PlaceStone(int i, int j)
     {
         board[i - 1][j - 1] = turn;
+        pass = 0;
     }
 }
 
@@ -149,7 +150,26 @@ public partial class Game : Page
 
     private void Pass(object sender, RoutedEventArgs e)
     {
+        if (state.turn == 0 && player1 == Player.AI)
+            return;
+        if (state.turn == 1 && player2 == Player.AI)
+            return;
 
+        state.pass++;
+        if (state.pass == 2)
+            EndGame();
+        else
+            EndTurn();
+    }
+
+    private void EndGame()
+    {
+        if (state.turn == 0)
+            WinnerTxt.Text = "Winner: White";
+        else
+            WinnerTxt.Text = "Winner: Black";
+        state.turn = -1;
+        TurnTxt.Text = "Turn:";
     }
 
     private void Resign(object sender, RoutedEventArgs e)
