@@ -124,13 +124,18 @@ public partial class Game : Page
         state.turn = 1 - state.turn;
         if (state.turn == 0)
             TurnTxt.Text = "Turn: Black";
-        else
+        if (state.turn == 1)
             TurnTxt.Text = "Turn: White";
         DrawBoard();
     }
 
     private void ButtonPlaceStone(object sender, RoutedEventArgs e)
     {
+        if (state.turn == 0 && player1 == Player.AI)
+            return;
+        if (state.turn == 1 && player2 == Player.AI)
+            return;
+
         Button button = sender as Button;
         int i, j;
         int.TryParse(button.Name.Split("_")[1], out i);
@@ -149,6 +154,11 @@ public partial class Game : Page
 
     private void Resign(object sender, RoutedEventArgs e)
     {
-
+        if (state.turn == 0)
+            WinnerTxt.Text = "Winner: White";
+        else
+            WinnerTxt.Text = "Winner: Black";
+        state.turn = -1;
+        TurnTxt.Text = "Turn:";
     }
 }
