@@ -67,7 +67,7 @@ public class GameState
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i - 1 == VisitedX[l] && j == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -83,7 +83,7 @@ public class GameState
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i + 1 == VisitedX[l] && j == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -99,7 +99,7 @@ public class GameState
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i == VisitedX[l] && j - 1 == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -115,7 +115,7 @@ public class GameState
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i == VisitedX[l] && j + 1 == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -130,9 +130,9 @@ public class GameState
         return result;
     }
 
-    public void ReplaceThroughBoard(int x, int y, int v)
+    public void ReplaceThroughBoard(int x, int y, int v, List<List<int>> b)
     {
-        int s = board[x][y], i, j;
+        int s = b[x][y], i, j;
 
         List<int> VisitedX = new List<int>();
         List<int> VisitedY = new List<int>();
@@ -145,15 +145,15 @@ public class GameState
             i = VisitedX[k];
             j = VisitedY[k];
 
-            board[i][j] = v;
+            b[i][j] = v;
 
             if (i > 0)
             {
-                if (board[i - 1][j] == s)
+                if (b[i - 1][j] == s)
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i - 1 == VisitedX[l] && j == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -164,11 +164,11 @@ public class GameState
             }
             if (i < n - 1)
             {
-                if (board[i + 1][j] == s)
+                if (b[i + 1][j] == s)
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i + 1 == VisitedX[l] && j == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -179,11 +179,11 @@ public class GameState
             }
             if (j > 0)
             {
-                if (board[i][j - 1] == s)
+                if (b[i][j - 1] == s)
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i == VisitedX[l] && j - 1 == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -194,11 +194,11 @@ public class GameState
             }
             if (j < n - 1)
             {
-                if (board[i][j + 1] == s)
+                if (b[i][j + 1] == s)
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i == VisitedX[l] && j + 1 == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -210,9 +210,9 @@ public class GameState
         }
     }
 
-    public bool SearchThroughBoard(int x, int y, int v)
+    public bool SearchThroughBoard(int x, int y, int v, List<List<int>> b)
     {
-        int s = board[x][y], i, j;
+        int s = b[x][y], i, j;
 
         List<int> VisitedX = new List<int>();
         List<int> VisitedY = new List<int>();
@@ -227,13 +227,13 @@ public class GameState
 
             if(i > 0)
             {
-                if (board[i - 1][j] == v)
+                if (b[i - 1][j] == v)
                     return true;
-                if (board[i - 1][j] == s)
+                if (b[i - 1][j] == s)
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i - 1 == VisitedX[l] && j == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -244,13 +244,13 @@ public class GameState
             }
             if(i < n - 1)
             {
-                if (board[i + 1][j] == v)
+                if (b[i + 1][j] == v)
                     return true;
-                if (board[i + 1][j] == s)
+                if (b[i + 1][j] == s)
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i + 1 == VisitedX[l] && j == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -261,13 +261,13 @@ public class GameState
             }
             if(j > 0)
             {
-                if (board[i][j - 1] == v)
+                if (b[i][j - 1] == v)
                     return true;
-                if (board[i][j - 1] == s)
+                if (b[i][j - 1] == s)
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i == VisitedX[l] && j - 1 == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -278,13 +278,13 @@ public class GameState
             }
             if(j < n - 1)
             {
-                if (board[i][j + 1] == v)
+                if (b[i][j + 1] == v)
                     return true;
-                if (board[i][j + 1] == s)
+                if (b[i][j + 1] == s)
                 {
                     bool put = true;
                     for (int l = 0; l < VisitedX.Count; l++)
-                        if (i == VisitedX[l] && j == VisitedY[l])
+                        if (i == VisitedX[l] && j + 1 == VisitedY[l])
                             put = false;
                     if (put)
                     {
@@ -298,15 +298,63 @@ public class GameState
         return false;
     }
 
-    public bool CanPlaceStone(int i, int j)
+    public void PlaceStoneOnBoard(int i, int j, List<List<int>> b)
     {
+        b[i][j] = turn;
+        if (i > 0 && b[i - 1][j] == 1 - turn && !SearchThroughBoard(i - 1, j, -1, b))
+            ReplaceThroughBoard(i - 1, j, -1, b);
+        if (j > 0 && b[i][j - 1] == 1 - turn && !SearchThroughBoard(i, j - 1, -1, b))
+            ReplaceThroughBoard(i, j - 1, -1, b);
+        if (i < n - 1 && b[i + 1][j] == 1 - turn && !SearchThroughBoard(i + 1, j, -1, b))
+            ReplaceThroughBoard(i + 1, j, -1, b);
+        if (j < n - 1 && b[i][j + 1] == 1 - turn && !SearchThroughBoard(i, j + 1, -1, b))
+            ReplaceThroughBoard(i, j + 1, -1, b);
+    }
+
+    public bool CanPlaceStone(int x, int y)
+    {
+        if (board[x][y] != -1)
+            return false;
+
+        List<List<int>> b = new List<List<int>>();
+        for (int i = 1; i <= n; i++)
+        {
+            b.Add(new List<int>());
+            for (int j = 1; j <= n; j++)
+            {
+                b[i - 1].Add(board[i - 1][j - 1]);
+            }
+        }
+
+        PlaceStoneOnBoard(x, y, b);
+        if (EqualsToPrevious(b))
+            return false;
+        if (!SearchThroughBoard(x, y, -1, b))
+            return false;
+
         return true;
     }
 
-    public void PlaceStone(int i, int j)
+    public void PlaceStone(int x, int y)
     {
-        board[i - 1][j - 1] = turn;
+        previousBoard = new List<List<int>>();
+        for (int i = 1; i <= n; i++)
+        {
+            previousBoard.Add(new List<int>());
+            for (int j = 1; j <= n; j++)
+            {
+                previousBoard[i - 1].Add(board[i - 1][j - 1]);
+            }
+        }
+        PlaceStoneOnBoard(x, y, board);
+        turn = 1 - turn;
         pass = 0;
+    }
+
+    public void Pass()
+    {
+        pass++;
+        turn = 1 - turn;
     }
 }
 
@@ -375,7 +423,6 @@ public partial class Game : Page
 
     public void EndTurn()
     {
-        state.turn = 1 - state.turn;
         if (state.turn == 0)
             TurnTxt.Text = "Turn: Black";
         if (state.turn == 1)
@@ -394,21 +441,21 @@ public partial class Game : Page
         int i, j;
         int.TryParse(button.Name.Split("_")[1], out i);
         int.TryParse(button.Name.Split("_")[2], out j);
-        if(state.CanPlaceStone(i, j))
+        if(state.CanPlaceStone(i - 1, j - 1))
         {
-            state.PlaceStone(i, j);
+            state.PlaceStone(i - 1, j - 1);
             EndTurn();
         }
     }
 
-    private void Pass(object sender, RoutedEventArgs e)
+    private void ButtonPass(object sender, RoutedEventArgs e)
     {
         if (state.turn == 0 && player1 == Player.AI)
             return;
         if (state.turn == 1 && player2 == Player.AI)
             return;
 
-        state.pass++;
+        state.Pass();
         if (state.pass == 2)
             EndGame();
         else
