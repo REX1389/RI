@@ -7,8 +7,73 @@ using System.Windows.Media.Imaging;
 
 namespace Gogogo.Pages;
 
+public class con
+{
+    public const int C = 2, TIME = 3;
+}
+
 public enum Player
 {AI, Human}
+
+public class Turn
+{
+    public int x, y;
+
+    public Turn(int i, int j)
+    {
+        this.x = i;
+        this.y = j;
+    }
+}
+
+public class Node
+{
+    int visited = 0;
+    double value = 0;
+    GameState state;
+    List<Node> children = new List<Node>();
+
+    public Node(GameState gs, int i, int j)
+    {
+        state = new GameState(gs, i, j);
+    }
+
+    public double Explore()
+    {
+        double v;
+        visited++;
+        if(visited == 0)
+        {
+            v = state.Simulate();
+            foreach (Turn t in state.FindAllMoves())
+                children.Add(new Node(state, t.x, t.y));
+        }
+        else
+        {
+            double maxV = -1;
+            int turn = 0;
+
+            foreach(Node child in children)
+            {
+                double tempV;
+                if (child.visited == 0)
+                    tempV = 1000;
+                else
+                    tempV = child.value / child.visited + con.C * Math.Sqrt(visited / child.visited);
+
+                if(tempV > maxV)
+                {
+                    maxV = tempV;
+                    turn = children.IndexOf(child);
+                }
+            }
+
+            v = children[turn].Explore();
+        }
+        value += v;
+        return v;
+    }
+}
 
 public class GameState
 {
@@ -34,6 +99,31 @@ public class GameState
                 previousBoard[i - 1].Add(-1);
             }
         }
+    }
+
+    public GameState(GameState gs, int x, int y)
+    {
+        turn = gs.turn;
+        n = gs.n;
+        pass = gs.pass;
+
+        board = new List<List<int>>();
+        previousBoard = new List<List<int>>();
+        for (int i = 1; i <= n; i++)
+        {
+            board.Add(new List<int>());
+            previousBoard.Add(new List<int>());
+            for (int j = 1; j <= n; j++)
+            {
+                board[i - 1].Add(gs.board[i - 1][j - 1]);
+                previousBoard[i - 1].Add(gs.previousBoard[i - 1][j - 1]);
+            }
+        }
+
+        if (x == -1 && y == -1)
+            Pass();
+        else
+            PlaceStone(x, y);
     }
 
     public bool EqualsToPrevious(List<List<int>> board2)
@@ -361,6 +451,24 @@ public class GameState
         return true;
     }
 
+    public List<Turn> FindAllMoves()
+    {
+        List<Turn> list = new List<Turn>();
+
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < n; j++)
+                if(CanPlaceStone(i, j))
+                    list.Add(new Turn(i, j));
+        list.Add(new Turn(-1, -1)); //Za pass jer je i to potez
+
+        return list;
+    }
+
+    public double Simulate()
+    {
+        return 1;
+    }
+
     public void PlaceStone(int x, int y)
     {
         previousBoard = new List<List<int>>();
@@ -482,9 +590,17 @@ public partial class Game : Page
     public void EndTurn()
     {
         if (state.turn == 0)
+        {
             TurnTxt.Text = "Turn: Black";
+            if (player1 == Player.AI)
+                AITurn();
+        }
         if (state.turn == 1)
+        {
             TurnTxt.Text = "Turn: White";
+            if (player2 == Player.AI)
+                AITurn();
+        }
         DrawBoard();
     }
 
@@ -544,5 +660,10 @@ public partial class Game : Page
             WinnerTxt.Text = "Winner: Black";
         state.turn = -1;
         TurnTxt.Text = "Turn:";
+    }
+
+    private void AITurn()
+    {
+
     }
 }
