@@ -28,20 +28,27 @@ public class Turn
 
 public class Node
 {
-    int visited = 0;
-    double value = 0;
-    GameState state;
-    List<Node> children = new List<Node>();
+    public int visited = 0;
+    public double value = 0;
+    public GameState state;
+    public Turn Turn;
+    public List<Node> children = new List<Node>();
+
+    public Node(GameState gs)
+    {
+        state = new GameState(gs);
+    }
 
     public Node(GameState gs, int i, int j)
     {
+        Turn = new Turn(i, j);
         state = new GameState(gs, i, j);
     }
 
     public double Explore()
     {
         double v;
-        visited++;
+
         if(visited == 0)
         {
             v = state.Simulate();
@@ -70,7 +77,10 @@ public class Node
 
             v = children[turn].Explore();
         }
+
         value += v;
+        visited++;
+
         return v;
     }
 }
@@ -97,6 +107,26 @@ public class GameState
             {
                 board[i - 1].Add(-1);
                 previousBoard[i - 1].Add(-1);
+            }
+        }
+    }
+
+    public GameState(GameState gs)
+    {
+        turn = gs.turn;
+        n = gs.n;
+        pass = gs.pass;
+
+        board = new List<List<int>>();
+        previousBoard = new List<List<int>>();
+        for (int i = 1; i <= n; i++)
+        {
+            board.Add(new List<int>());
+            previousBoard.Add(new List<int>());
+            for (int j = 1; j <= n; j++)
+            {
+                board[i - 1].Add(gs.board[i - 1][j - 1]);
+                previousBoard[i - 1].Add(gs.previousBoard[i - 1][j - 1]);
             }
         }
     }
@@ -639,9 +669,9 @@ public partial class Game : Page
     private void EndGame()
     {
         if (state.winner == 0)
-            WinnerTxt.Text = "Winner: White";
-        if (state.winner == 1)
             WinnerTxt.Text = "Winner: Black";
+        if (state.winner == 1)
+            WinnerTxt.Text = "Winner: White";
         TurnTxt.Text = "Turn:";
 
         PointsTxt.Text = state.point1 + " - " + state.point2;
@@ -664,6 +694,38 @@ public partial class Game : Page
 
     private void AITurn()
     {
+        Node root = new Node(state);
 
+        DateTime start = new DateTime();
+        TimeSpan time = new TimeSpan(3);
+
+        while (DateTime.Now < start + time)
+        {
+            root.Explore();
+        }
+
+        double tempV = -1;
+        Turn turn = new Turn(-1, -1);
+
+        foreach(Node child in root.children)
+            if(child.value > tempV)
+            {
+                tempV = child.value;
+                turn = new Turn(child.Turn.x, child.Turn.y);
+            }
+
+        if (turn.x == -1 && turn.y == -1)
+        {
+            state.Pass();
+            if (state.pass == 2)
+                EndGame();
+            else
+                EndTurn();
+        }
+        else
+        {
+            state.PlaceStone(turn.x, turn.y);
+            EndTurn();
+        }
     }
 }
