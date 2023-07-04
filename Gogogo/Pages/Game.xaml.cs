@@ -1,33 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Gogogo.Pages
+namespace Gogogo.Pages;
+
+public enum Player
+{AI, Human}
+
+public partial class Game : Page
 {
-    /// <summary>
-    /// Interaction logic for Game.xaml
-    /// </summary>
-    public partial class Game : Page
+    public Game(int n, Player player1, Player player2)
     {
-        public Game()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
+    private void ButtonClick(object sender, RoutedEventArgs e)
+    {
 
-        }
     }
 }

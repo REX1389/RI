@@ -9,6 +9,20 @@
       Title="Menu2">
 
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Button Grid.Column="1" Grid.Row="0" Margin="50" FontSize="30" Click="ButtonHH">Human vs Human</Button>
+        <Button Grid.Column="1" Grid.Row="1" Margin="50" FontSize="30" Click="ButtonHA">Human vs AI</Button>
+        <Button Grid.Column="1" Grid.Row="2" Margin="50" FontSize="30" Click="ButtonAH">AI vs Human</Button>
+        <Button Grid.Column="1" Grid.Row="3" Margin="50" FontSize="30" Click="ButtonAA">AI vs AI</Button>
     </Grid>
 </Page>
